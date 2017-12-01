@@ -77,6 +77,9 @@ static int __exit exit_mymodule(void) {
     nf_unregister_hook(&my_nf_ops_forward);
     nf_unregister_hook(&my_nf_ops_post);
 }
+module_init(init_mymodule);
+module_exit(exit_mymodule);
+
 
 MODULE_AUTHOR("sp11");
 MODULE_DESCRIPTION("os netfilter packet forwarding");
