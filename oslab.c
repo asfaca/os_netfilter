@@ -49,30 +49,32 @@ static struct nf_hook_ops my_nf_ops_pre {
     .pf = PF_INET,
     .hooknum = NF_INET_PRE_ROUTING,
     .priority = NF_IP_PRI_FIRST
-};
+}
 
 static struct nf_hook_ops my_nf_ops_forward {
     .hook = my_hook_fn_forward,
     .pf = PF_INET,
     .hooknum = NF_INET_FORWARD,
     .priority = NF_IP_PRI_FIRST
-};
+}
 
 static struct nf_hook_ops my_nf_ops_post {
     .hook = my_hook_fn_post,
     .pf = PF_INET,
     .hooknum = NF_INET_POST_ROUTING,
     .priority = NF_IP_PRI_FIRST
-};
+}
 
 /*init routine of module*/
 static int __init init_mymodule(void) {
     nf_register_hook(&my_nf_ops_pre);
     nf_register_hook(&my_nf_ops_forward);
     nf_register_hook(&my_nf_ops_post);
+
+    return 0;
 }
 
-static int __exit exit_mymodule(void) {
+static void __exit exit_mymodule(void) {
     nf_unregister_hook(&my_nf_ops_pre);
     nf_unregister_hook(&my_nf_ops_forward);
     nf_unregister_hook(&my_nf_ops_post);
