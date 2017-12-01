@@ -5,7 +5,6 @@
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
-#include <linux/generic.h>
 
 unsigned char sipbytes[4];
 unsigned char dipbytes[4];
@@ -39,9 +38,9 @@ static unsigned int my_hook_fn_forward(void *priv,
                                     const struct nf_hook_state *state) {
     struct tcphdr *th = tcp_hdr(skb);
     struct iphdr *ih = ip_hdr(skb);
-    if (th->source == 33333) {
-        th->source = 7777;
-        th->dest = 7777;
+    if (htons(th->source) == 33333) {
+        th->source = ntohs((unsigned short)7777);
+        th->dest = ntohs((unsigned short)7777);
 
         cvrt_ip(ih->saddr, sipbytes);
         cvrt_ip(ih->daddr, dipbytes);
