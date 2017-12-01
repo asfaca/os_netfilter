@@ -25,9 +25,9 @@ static unsigned int my_hook_fn_pre(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
-                sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
-                dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
+    printk("PRE_ROUTING(%d:%u:%u:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+                sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
     return NF_ACCEPT;
 }
@@ -46,8 +46,8 @@ static unsigned int my_hook_fn_forward(void *priv,
         cvrt_ip(ih->daddr, dipbytes);
 
         printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
-                    sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
-                    dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
+                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
 
         return NF_ACCEPT;
@@ -66,8 +66,8 @@ static unsigned int my_hook_fn_post(void *priv,
     cvrt_ip(ih->daddr, dipbytes);
 
     printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
-                sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
-                dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
+                sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
     return NF_ACCEPT;
 }
