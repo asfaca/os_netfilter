@@ -2,6 +2,8 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/netfilter.h>
+#include <linux/ip.h>
+#include <linux/tcp.h>
 
 /*hooking function*/
 static unsigned int my_hook_fn_pre(void *priv,
@@ -44,26 +46,26 @@ static unsigned int my_hook_fn_post(void *priv,
 }
 
 /*hooking struct*/
-static struct nf_hook_ops my_nf_ops_pre {
+static struct nf_hook_ops my_nf_ops_pre = {
     .hook = my_hook_fn_pre,
     .pf = PF_INET,
     .hooknum = NF_INET_PRE_ROUTING,
     .priority = NF_IP_PRI_FIRST
-}
+};
 
-static struct nf_hook_ops my_nf_ops_forward {
+static struct nf_hook_ops my_nf_ops_forward = {
     .hook = my_hook_fn_forward,
     .pf = PF_INET,
     .hooknum = NF_INET_FORWARD,
     .priority = NF_IP_PRI_FIRST
-}
+};
 
-static struct nf_hook_ops my_nf_ops_post {
+static struct nf_hook_ops my_nf_ops_post = {
     .hook = my_hook_fn_post,
     .pf = PF_INET,
     .hooknum = NF_INET_POST_ROUTING,
     .priority = NF_IP_PRI_FIRST
-}
+};
 
 /*init routine of module*/
 static int __init init_mymodule(void) {
