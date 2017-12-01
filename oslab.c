@@ -5,11 +5,12 @@
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
+#include <arpa/inet.h>
 
 unsigned char sipbytes[4];
 unsigned char dipbytes[4];
 
-#define cvrt_ip(ip, bytes)   bytes[0] = ip & 0xFF;\
+#define cvrt_ip(ip, bytes)  bytes[0] = ip & 0xFF;\
                             bytes[1] = (ip >> 8) & 0xFF;\
                             bytes[2] = (ip >> 16) & 0xFF;\
                             bytes[3] = (ip >> 24) & 0xFF;  
@@ -25,7 +26,7 @@ static unsigned int my_hook_fn_pre(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("PRE_ROUTING(%d:%u:%u:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+    printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
                 sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                 dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
@@ -45,7 +46,7 @@ static unsigned int my_hook_fn_forward(void *priv,
         cvrt_ip(ih->saddr, sipbytes);
         cvrt_ip(ih->daddr, dipbytes);
 
-        printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+        printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
                     sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                     dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
@@ -65,7 +66,7 @@ static unsigned int my_hook_fn_post(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+    printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
                 sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                 dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
