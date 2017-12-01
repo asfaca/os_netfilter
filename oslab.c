@@ -38,7 +38,7 @@ static unsigned int my_hook_fn_forward(void *priv,
                                     const struct nf_hook_state *state) {
     struct tcphdr *th = tcp_hdr(skb);
     struct iphdr *ih = ip_hdr(skb);
-    if (htons(th->source) == 33333) {
+    if (htons(th->source) == (unsigned short)33333) {
         th->source = ntohs((unsigned short)7777);
         th->dest = ntohs((unsigned short)7777);
 
@@ -65,10 +65,16 @@ static unsigned int my_hook_fn_post(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
-                sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
-                dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
-
+    if (th->ack == 0) {
+        printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
+    }
+    else {
+        printk("POST_ACK_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
+    }
     return NF_ACCEPT;
 }
 
