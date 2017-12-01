@@ -9,7 +9,7 @@
 unsigned char sipbytes[4];
 unsigned char dipbytes[4];
 
-#define cvrt_ip(ip, byte)   bytes[0] = ip & 0xFF;\
+#define cvrt_ip(ip, bytes)   bytes[0] = ip & 0xFF;\
                             bytes[1] = (ip >> 8) & 0xFF;\
                             bytes[2] = (ip >> 16) & 0xFF;\
                             bytes[3] = (ip >> 24) & 0xFF;  
