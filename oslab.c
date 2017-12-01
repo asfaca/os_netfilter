@@ -9,13 +9,8 @@ static unsigned int my_hook_fn_pre(void *priv,
                                     const struct nf_hook_state *state) {
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
-    __u8 prot = ih->Protocol;   //__u8 = unsigned char
-    __be32 sip = ih->saddr;     //__be32 = unsigned int
-    __be32 dip = ih->daddr;
-    __be16 sport = th->source;  //__be16 = unsigned short
-    __be16 dport = th->dest;
 
-    printk("PRE_ROUTING(%c:%hd:%hd:%u:%u)", prot, sport, dport, sip, dip);
+    printk("PRE_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
 
     return NF_ACCEPT;
 }
@@ -30,13 +25,7 @@ static unsigned int my_hook_fn_forward(void *priv,
         th->dest = 7777;
 
         struct iphdr *ih = ip_hdr(skb);
-        __u8 prot = ih->Protocol;   //__u8 = unsigned char
-        __be32 sip = ih->saddr;     //__be32 = unsigned int
-        __be32 dip = ih->daddr;
-        __be16 sport = th->source;  //__be16 = unsigned short
-        __be16 dport = th->dest;
-
-        printk("FORWARD_ROUTING(%c:%hd:%hd:%u:%u)", prot, sport, dport, sip, dip);
+        printk("FORWARD_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
 
         return NF_ACCEPT;
     }
@@ -49,13 +38,7 @@ static unsigned int my_hook_fn_post(void *priv,
                                     const struct nf_hook_state *state) {
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
-    __u8 prot = ih->Protocol;   //__u8 = unsigned char
-    __be32 sip = ih->saddr;     //__be32 = unsigned int
-    __be32 dip = ih->daddr;
-    __be16 sport = th->source;  //__be16 = unsigned short
-    __be16 dport = th->dest;
-
-    printk("POST_ROUTING(%c:%hd:%hd:%u:%u)", prot, sport, dport, sip, dip);
+    printk("POST_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
 
     return NF_ACCEPT;
 }
@@ -79,7 +62,7 @@ static struct nf_hook_ops my_nf_ops_post {
     .hook = my_hook_fn_post,
     .pf = PF_INET,
     .hooknum = NF_INET_POST_ROUTING,
-    .priority = 9999
+    .priority = NF_IP_PRI_FIRST
 };
 
 /*init routine of module*/
@@ -94,3 +77,8 @@ static int __exit exit_mymodule(void) {
     nf_unregister_hook(&my_nf_ops_forward);
     nf_unregister_hook(&my_nf_ops_post);
 }
+
+MODULE_AUTHOR("sp11");
+MODULE_DESCRIPTION("os netfilter packet forwarding");
+MODULE_LICENSE("GPL");
+MODULE_VERSION("NEW");
