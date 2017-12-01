@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/netfilter.h>
+#include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
 
@@ -22,11 +23,11 @@ static unsigned int my_hook_fn_forward(void *priv,
                                     struct sk_buff *skb,
                                     const struct nf_hook_state *state) {
     struct tcphdr *th = tcp_hdr(skb);
+    struct iphdr *ih = ip_hdr(skb);
     if (th->source == 33333) {
         th->source = 7777;
         th->dest = 7777;
 
-        struct iphdr *ih = ip_hdr(skb);
         printk("FORWARD_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
 
         return NF_ACCEPT;
