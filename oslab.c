@@ -6,6 +6,15 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 
+unsigned char sipbytes[4];
+unsigned char dipbytes[4];
+
+#define cvrt_ip(ip, byte)   bytes[0] = ip & 0xFF;\
+                            bytes[1] = (ip >> 8) & 0xFF;\
+                            bytes[2] = (ip >> 16) & 0xFF;\
+                            bytes[3] = (ip >> 24) & 0xFF;  
+
+
 /*hooking function*/
 static unsigned int my_hook_fn_pre(void *priv,
                                     struct sk_buff *skb,
@@ -13,7 +22,12 @@ static unsigned int my_hook_fn_pre(void *priv,
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
 
-    printk("PRE_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
+    cvrt_ip(ih->saddr, sipbyte);
+    cvrt_ip(ih->daddr, dipbyte);
+
+    printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+                sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
+                dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
 
     return NF_ACCEPT;
 }
@@ -28,7 +42,13 @@ static unsigned int my_hook_fn_forward(void *priv,
         th->source = 7777;
         th->dest = 7777;
 
-        printk("FORWARD_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
+        cvrt_ip(ih->saddr, sipbyte);
+        cvrt_ip(ih->daddr, dipbyte);
+
+        printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+                    sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
+                    dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
+
 
         return NF_ACCEPT;
     }
@@ -41,7 +61,13 @@ static unsigned int my_hook_fn_post(void *priv,
                                     const struct nf_hook_state *state) {
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
-    printk("POST_ROUTING(%c:%hd:%hd:%u:%u)", ih->protocol, th->source, th->dest, ih->saddr, ih->daddr);
+
+    cvrt_ip(ih->saddr, sipbyte);
+    cvrt_ip(ih->daddr, dipbyte);
+
+    printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
+                sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
+                dipbytes[3], dipbytes[2], dipbytes[1], dipbytes[0]);
 
     return NF_ACCEPT;
 }
