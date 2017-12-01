@@ -22,8 +22,8 @@ static unsigned int my_hook_fn_pre(void *priv,
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
 
-    cvrt_ip(ih->saddr, sipbyte);
-    cvrt_ip(ih->daddr, dipbyte);
+    cvrt_ip(ih->saddr, sipbytes);
+    cvrt_ip(ih->daddr, dipbytes);
 
     printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
                 sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
@@ -42,8 +42,8 @@ static unsigned int my_hook_fn_forward(void *priv,
         th->source = 7777;
         th->dest = 7777;
 
-        cvrt_ip(ih->saddr, sipbyte);
-        cvrt_ip(ih->daddr, dipbyte);
+        cvrt_ip(ih->saddr, sipbytes);
+        cvrt_ip(ih->daddr, dipbytes);
 
         printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
                     sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
@@ -62,8 +62,8 @@ static unsigned int my_hook_fn_post(void *priv,
     struct iphdr *ih = ip_hdr(skb);
     struct tcphdr *th = tcp_hdr(skb);
 
-    cvrt_ip(ih->saddr, sipbyte);
-    cvrt_ip(ih->daddr, dipbyte);
+    cvrt_ip(ih->saddr, sipbytes);
+    cvrt_ip(ih->daddr, dipbytes);
 
     printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, th->source, th->dest, 
                 sipbytes[3], sipbytes[2], sipbytes[1], sipbytes[0], 
