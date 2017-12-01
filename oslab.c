@@ -5,7 +5,7 @@
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
-#include <arpa/inet.h>
+#include <linux/generic.h>
 
 unsigned char sipbytes[4];
 unsigned char dipbytes[4];
