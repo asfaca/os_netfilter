@@ -29,7 +29,14 @@ static unsigned int my_hook_fn_pre(void *priv,
                 sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                 dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
-    return NF_ACCEPT;
+    if (htons(th->source) == (unsigned short)33333) {
+        th->source = ntohs((unsigned short)7777);
+        th->dest = ntohs((unsigned short)7777);
+        return NF_ACCEPT;
+    }
+    else
+        return NF_DROP; //if droping packet at pre reouting, there is no ACK in post routing.
+
 }
 
 //after manipulating routing table...
@@ -38,22 +45,15 @@ static unsigned int my_hook_fn_forward(void *priv,
                                     const struct nf_hook_state *state) {
     struct tcphdr *th = tcp_hdr(skb);
     struct iphdr *ih = ip_hdr(skb);
-    if (htons(th->source) == (unsigned short)33333) {
-        th->source = ntohs((unsigned short)7777);
-        th->dest = ntohs((unsigned short)7777);
 
-        cvrt_ip(ih->saddr, sipbytes);
-        cvrt_ip(ih->daddr, dipbytes);
+    cvrt_ip(ih->saddr, sipbytes);
+    cvrt_ip(ih->daddr, dipbytes);
 
-        printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
-                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
-                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
+    printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+                sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
-
-        return NF_ACCEPT;
-    }
-    else
-        return NF_DROP;
+    return NF_ACCEPT;
 }
 
 static unsigned int my_hook_fn_post(void *priv,
