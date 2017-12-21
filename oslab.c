@@ -32,7 +32,7 @@ static unsigned int my_hook_fn_pre(void *priv,
     if (ntohs(th->source) == (unsigned short)33333) {
         th->source = htons((unsigned short)7777);
         th->dest = htons((unsigned short)7777);
-        ih->daddr = htonl((unsigned long)654782125); //39.7.46.173
+        ih->daddr = htonl((unsigned long)3232261120); //192.168.100.0
         return NF_ACCEPT;
     }
     else
