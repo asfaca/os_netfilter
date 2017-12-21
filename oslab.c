@@ -25,13 +25,14 @@ static unsigned int my_hook_fn_pre(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+    printk("PRE_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
                 sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                 dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
-    if (htons(th->source) == (unsigned short)33333) {
-        th->source = ntohs((unsigned short)7777);
-        th->dest = ntohs((unsigned short)7777);
+    if (ntohs(th->source) == (unsigned short)33333) {
+        th->source = htons((unsigned short)7777);
+        th->dest = htons((unsigned short)7777);
+        ih->daddr = htonl((unsigned long)654782125) //39.7.46.173
         return NF_ACCEPT;
     }
     else
@@ -49,7 +50,7 @@ static unsigned int my_hook_fn_forward(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+    printk("FORWARD_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
                 sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                 dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
 
@@ -66,12 +67,12 @@ static unsigned int my_hook_fn_post(void *priv,
     cvrt_ip(ih->daddr, dipbytes);
 
     if (th->ack == 0) {
-        printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+        printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
                     sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                     dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
     }
     else {
-        printk("POST_ACK_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, htons(th->source), htons(th->dest), 
+        printk("POST_ACK_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
                     sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
                     dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
     }
