@@ -66,16 +66,10 @@ static unsigned int my_hook_fn_post(void *priv,
     cvrt_ip(ih->saddr, sipbytes);
     cvrt_ip(ih->daddr, dipbytes);
 
-    if (th->ack == 0) {
-        printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
-                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
-                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
-    }
-    else {
-        printk("POST_ACK_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
-                    sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
-                    dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
-    }
+    printk("POST_ROUTING(%d:%hu:%hu:%d.%d.%d.%d:%d.%d.%d.%d)", ih->protocol, ntohs(th->source), ntohs(th->dest), 
+                sipbytes[0], sipbytes[1], sipbytes[2], sipbytes[3], 
+                dipbytes[0], dipbytes[1], dipbytes[2], dipbytes[3]);
+
     return NF_ACCEPT;
 }
 
