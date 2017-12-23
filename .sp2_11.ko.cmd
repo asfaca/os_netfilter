@@ -1,0 +1,1 @@
+cmd_/home/oslab/os_netfilter/sp2_11.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/oslab/os_netfilter/sp2_11.ko /home/oslab/os_netfilter/sp2_11.o /home/oslab/os_netfilter/sp2_11.mod.o ;  true

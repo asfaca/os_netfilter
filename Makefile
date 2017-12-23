@@ -1,4 +1,4 @@
-obj-m +=oslab.o
+obj-m +=sp2_11.o
 
 KDIR = /usr/src/linux-headers-4.10.0-28-generic
 
